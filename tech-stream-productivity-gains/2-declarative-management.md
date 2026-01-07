@@ -1,4 +1,4 @@
-# 2 – Declarative Management
+# 2 - Declarative Management
 
 ## 2 - 1 Definition
 
@@ -39,7 +39,7 @@ A cloud-native approach to configuration management would be:
 
 ## 2 - 2 External References
 
-Multi-Intent Service Configuration Vision Whitepaper by L. Leuthold – July 22
+Multi-Intent Service Configuration Vision Whitepaper by L. Leuthold - July 22
 
 ## 2 - 3 Pain Points
 
@@ -67,7 +67,7 @@ Addressing these pain-points is crucial to streamline deployment processes, redu
 
 ## 2 - 4 Harmonized Productivity Gains Quantified
 
-Not possible as of now. This transformation has just started – we do not have success testimonies other than showcasing SDC and IaaS automation
+Not possible as of now. This transformation has just started - we do not have success testimonies other than showcasing SDC and IaaS automation
 
 ## 2 - 5 CNTF’s ask to ISV or F/OSS
 

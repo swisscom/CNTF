@@ -76,7 +76,7 @@ Source of feedback information can be CSP lab, staging and production environmen
 
 Agreements between information source owners and information receivers must be established. To adhere to regulatory requirements and privacy principles some information may have to be anonymized before transferring from CSP to ISV.
 
-### 9. Division of Responsibility – Optimal Verification and Integration
+### 9. Division of Responsibility - Optimal Verification and Integration
 
 Quality is assured as joint effort between ISV and CSP. Automated quality assurance activities will be conducted both in ISV and CSP environments, selecting the most appropriate environment for the task at hand. Generally applicable verification shall be shifted towards ISV, while CSP specific verification shall be shifted towards CSP. An aligned staging process and an established feedback loop is essential for this to be efficient.
 

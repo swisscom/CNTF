@@ -1,4 +1,4 @@
-# 3 – Observability
+# 3 - Observability
 
 ## 3 - 1 Definition
 

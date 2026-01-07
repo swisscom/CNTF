@@ -34,8 +34,8 @@ Ericsson, Nokia
 
 - [General Information](0-productivity-gains.md)
 - [1 - Software Freshness](1-software-freshness.md)
-- [2 – Declarative Management](2-declarative-management.md)
-- [3 – Observability](3-observability.md)
+- [2 - Declarative Management](2-declarative-management.md)
+- [3 - Observability](3-observability.md)
 - [4 - Scalability](4-scalability.md)
 - [5 - High Availability](5-high-availability.md)
 
@@ -69,7 +69,7 @@ Given the extensive range of aspects and disciplines within cloud-native princip
 | ------ | --------- | ------------------------------------------------------------ |
 | 1.0.0  | CW11/2025 | Initial release                                              |
 | 2.0.0  | CW15/2025 | Chapters / Area restructured. Always-on-latest-SW Paradigm, “No-touch”/Continuous Flow SW and Feedback Loop, Testing in Production, CNTF proposed foundation services for GitOps, Multi-App-On-Single Cluster, DORA Metrics for CD. |
-| 2.1.0  | CW44/2025 | New Areas: Observability – Area 3, Scalability – Area 4, High Availability Area 5 |
+| 2.1.0  | CW44/2025 | New Areas: Observability - Area 3, Scalability - Area 4, High Availability Area 5 |
 | 2.1.0+ |           | Version control tracked in git                               |
 
 ### Glossary
