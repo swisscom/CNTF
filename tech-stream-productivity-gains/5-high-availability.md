@@ -4,7 +4,7 @@
 
 Availability in the context of cloud nativeness typically refers to fault tolerance, resiliency and self-healing. These attributes may allow an application to stay operational even when facing errors or failures. By dynamically and swiftly addressing these issues without causing downtime, applications can maintain high availability. This is often achieved through the implementation of microservice architectures, redundancies, failover mechanisms, monitoring, and container orchestration.
 
-A microservice architecture can facilitate resilience by allowing individual components of an application to fail without necessarily affecting others. Additionally, if the reduced start-up times of microservices would keep downtimes short, should they occur.
+A microservice architecture can facilitate resilience by allowing individual components of an application to fail without necessarily affecting others. Additionally, reduced start-up times of microservices would keep downtimes short, should they occur.
 
 Redundancy and failover mechanisms are a key component to maintain availability during the restart of components. They allow to reroute traffic to a different instance of the same component while the failing one restarts. This can be done on application, microservice or infrastructure level.
 

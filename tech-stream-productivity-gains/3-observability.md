@@ -8,7 +8,7 @@ In the telecom domain, the traditional integrated node design served as the aggr
 
 According to the Cloud Native Computing Foundation (CNCF), "Observability is a system property that defines the degree to which the system can generate actionable insights. It allows users to understand a system's state from these external outputs and take (corrective) action. […]” Consequently, how observable a system is will significantly impact its operating and development costs." Translating this into the telco domain implies that telemetry data must be collected across all layers of a distributed and disaggregated application stack, processed, and made available-both to human operators and to automation systems-to fulfil multiple operational needs, such as service assurance, monitoring, closed-loop automation, and root-cause analysis. All telemetry data must also carry contextual metadata to enable meaningful interpretation.
 
-A common cloud-native approach relies on three raw telemetry data types-often referred to as the three pillars of observability:
+A common cloud-native approach relies on three raw telemetry data types, often referred to as the three pillars of observability:
 
 1. Metrics: Quantitative measures of system or application performance, or business-defined indicators, typically stored in time-series databases.
 2. Logs: Structured or unstructured textual records that provide insight into runtime behaviour and context across applications and infrastructure.
