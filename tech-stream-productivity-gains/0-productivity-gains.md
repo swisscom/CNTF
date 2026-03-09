@@ -38,6 +38,7 @@ Ericsson, Nokia
 - [3 - Observability](3-observability.md)
 - [4 - Scalability](4-scalability.md)
 - [5 - High Availability](5-high-availability.md)
+- [6 - Replaceability](6-replaceability.md)
 
 ## General Information
 

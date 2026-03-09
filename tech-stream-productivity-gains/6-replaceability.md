@@ -12,7 +12,7 @@ Replaceability is the capability of a delivered cloud‑native application to op
 
 To minimize operational overhead and avoid duplicating functionality, cloud‑native applications must allow to replace vendor‑provided non‑functional components. Such as monitoring, logging, and data services, with their own standardized platform services. This ensures architectural consistency, reduces the footprint of newly onboarded applications, and enables seamless integration into the existing operational ecosystem.
 
-## 5 - 4 Harmonized Productivity Gains Quantified
+## 6 - 4 Harmonized Productivity Gains Quantified
 
 ## 6 - 5 CNTF’s ask to ISV or F/OSS
 
@@ -29,9 +29,9 @@ To minimize operational overhead and avoid duplicating functionality, cloud‑na
 | AREQ A6‑1.009   | Applications must be validated to run with at least one alternative implementation of each replaceable component (e.g., alternative OTEL collector, alternative data service, alternative message broker) to demonstrate practical replaceability. |
 | AREQ A6‑1.010   | No vendor‑provided operational component may be required for application correctness. Only core business logic components may be mandatory, all operational services must be replaceable by managed equivalents. |
 
-## 5 - 6 CNTF’s ask to CSP readiness
+## 6 - 6 CNTF’s ask to CSP readiness
 
-## 5 - 7 Testimonies
+## 6 - 7 Testimonies
 
 Hans Rudolf Steiger, Swisscom: 
 
