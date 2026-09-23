@@ -13,7 +13,7 @@ Telecommunication operators are struggling to adopt and scale cloud native techn
 The third Cloud Native Telco Forum takes place at the Swisscom headquarters in Worblaufen, near Bern, Switzerland.
 
 - When: 25 November 2026, 09:30 – 26 November 2026, 16:00
-- Where: Swisscom Hauptsitz, Alte Tiefenaustrasse 6, 3048 Worblaufen (Ittigen), Switzerland
+- Where: Swisscom, Genfergasse 14, 3011 Bern, Switzerland
 - Registration: open until 31 October 2026, 17:00
 
 All times are Central European Time (CET, UTC+1).
