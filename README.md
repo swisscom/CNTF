@@ -10,21 +10,11 @@ Telecommunication operators are struggling to adopt and scale cloud native techn
 
 ## CNTF 2026
 
-The third Cloud Native Telco Forum takes place at the Swisscom headquarters in Worblaufen, near Bern, Switzerland.
+<a href="./cntf-2026/schedule.html">Open the two-day agenda</a>
 
-- When: 25 November 2026, 09:30 – 26 November 2026, 16:00
-- Where: Swisscom, Genfergasse 14, 3011 Bern, Switzerland
-- Registration: open until 31 October 2026, 17:00
+Click anywhere on a session marked with an arrow to open its full description. To print, press **⌘P** and choose **A4** or **A3** paper in **Landscape**. The print layout shows one day per page.
 
-All times are Central European Time (CET, UTC+1).
-
-Agenda highlights:
-
-- Day 1 (25.11.2026, 09:10 – 18:00): Cloud-Native
-- Joint dinner (25.11.2026, 19:00 – 21:00)
-- Day 2 (26.11.2026, 09:00 – 16:00): Agentic AI in Telco/TechCo
-
-[Sign up here](https://oniva.swisscom.com/en/event/cntf-2026)
+On mobile, swipe across the breakout cards to see all four sessions. Each round’s time stays visible.
 
 ## Contact
 
