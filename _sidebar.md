@@ -1,0 +1,11 @@
+- [Cloud Native Telco Forum](/)
+- [CNTF 2026](/cntf-2026/cntf-2026.md)
+  - <a href="./cntf-2026/schedule.html#day-1" data-nosearch>Agenda Day 1: Cloud-Native</a>
+  - <a href="./cntf-2026/schedule.html#day-2" data-nosearch>Agenda Day 2: Agentic AI in Telco/TechCo</a>
+- [CNTF Tech Stream Productivity Gains](/tech-stream-productivity-gains/0-productivity-gains.md)
+  - [1 - Software Freshness](/tech-stream-productivity-gains/1-software-freshness.md)
+  - [2 - Declarative Management](/tech-stream-productivity-gains/2-declarative-management.md)
+  - [3 - Observability](/tech-stream-productivity-gains/3-observability.md)
+  - [4 - Scalability](/tech-stream-productivity-gains/4-scalability.md)
+  - [5 - High Availability](/tech-stream-productivity-gains/5-high-availability.md)
+  - [6 - Replaceability](/tech-stream-productivity-gains/6-replaceability.md)

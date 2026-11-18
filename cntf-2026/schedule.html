@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CNTF 2026 | Agenda</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font: clamp(.9375rem, min(1.3vw, 2.2dvh), 1.375rem)/1.25 system-ui, sans-serif;
+      color: #25233c;
+      background: #eae8f3;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100dvh; display: flex; flex-direction: column; }
+    a { color: #4c3685; }
+    a:focus-visible, summary:focus-visible, button:focus-visible, .round:focus-visible {
+      outline: 3px solid #6f46bf;
+      outline-offset: 3px;
+    }
+
+    .deck-bar, main { width: calc(100% - clamp(.75rem, 2vw, 2.5rem)); margin-inline: auto; }
+    main { flex: 1; display: grid; padding-bottom: .5rem; }
+    .deck-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem 1rem;
+      padding-block: .35rem;
+    }
+    .day-nav { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .day-nav a {
+      padding: .35rem .7rem;
+      border: 1px solid #bdb1d9;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 650;
+    }
+    .day-nav a[aria-current] { background: #39266b; color: white; border-color: #39266b; }
+
+    .slide {
+      --accent: #513988;
+      --tint: #f0ebfb;
+      --line: #cbbce8;
+      background: #fff;
+      border: 1px solid #d5cfe4;
+      border-radius: 1rem;
+      overflow: clip;
+    }
+    .slide:not([hidden]) { display: grid; grid-template-rows: auto 1fr auto; }
+    #day-2 { --accent: #135b55; --tint: #e7f5f0; --line: #a7d6ca; }
+    .slide-header {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: .4rem 1rem;
+      padding: .45rem clamp(.75rem, 2vw, 1.8rem);
+      background: var(--accent);
+      color: white;
+    }
+    .slide-header .slide-meta { justify-self: end; text-align: end; }
+    .slide-qr {
+      display: none;
+      justify-self: center;
+      height: clamp(3rem, 8dvh, 5.5rem);
+      aspect-ratio: 1;
+      padding: .2rem;
+      border-radius: .3rem;
+      background: white;
+    }
+    .slide-qr svg { display: block; width: 100%; height: 100%; }
+    .eyebrow, .slide-meta, .slot-label {
+      font-size: .75rem;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .eyebrow, .slide-meta { margin: 0; }
+    h1, h2, h3 { margin: 0; }
+    h1 { font-size: clamp(1.7rem, min(4.5vw, 6.3dvh), 3.1rem); line-height: 1.05; margin-top: .15rem; }
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: .35rem clamp(.75rem, 2vw, 1.8rem);
+      list-style: none;
+    }
+    .slot, .breakout-header, .round { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: .7rem; }
+    .slot { flex: 1; align-content: center; align-items: baseline; padding: .22rem .6rem; border-bottom: 1px solid #e8e5ee; }
+    .slot:last-child { border-bottom: 0; }
+    .slot-title { font-weight: 650; }
+    .pause { background: #f6f5f9; }
+    .social { background: #fff1dc; }
+    .time { color: var(--accent); font-size: .82rem; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    .breakouts {
+      flex: 2;
+      display: grid;
+      align-content: center;
+      margin-block: .4rem;
+      padding: .45rem .6rem .55rem;
+      border: 1px solid var(--line);
+      border-radius: .65rem;
+      background: var(--tint);
+    }
+    .breakout-header { align-items: baseline; color: var(--accent); margin-bottom: .35rem; }
+    .breakout-header h2 { font-size: 1rem; }
+    .round { align-items: stretch; }
+    .round + .round { margin-top: .3rem; }
+    .round .time { padding-top: .35rem; color: var(--accent); }
+    .tracks {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .35rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .tracks li {
+      display: flex;
+      flex-direction: column;
+      padding: .35rem .5rem;
+      border: 1px solid var(--line);
+      border-radius: .35rem;
+      background: #fff;
+    }
+    .tracks h3 { font-size: .9rem; line-height: 1.18; overflow-wrap: anywhere; }
+    .room { margin: auto 0 0; padding-top: .35rem; color: var(--accent); font-size: .72rem; line-height: 1.2; text-align: right; }
+    .session-details, .breakout-note { font-size: .8rem; }
+    .session-details { margin-top: .2rem; }
+    .session-details summary { width: fit-content; color: var(--accent); cursor: pointer; }
+    .session-details p { margin: .35rem 0 0; overflow-wrap: anywhere; }
+    .details-copy {
+      --preview-lines: 1;
+      line-height: 1.35;
+      display: flow-root;
+      max-block-size: calc(var(--preview-lines) * 1lh);
+      overflow: hidden;
+    }
+    .tracks .details-copy { --preview-lines: 3; }
+    .details-copy p:first-child { margin-top: 0; }
+    .details-copy.truncated {
+      mask-image: linear-gradient(90deg, #000 55%, transparent) bottom / 100% 1lh no-repeat,
+        linear-gradient(#000 0 0) top / 100% calc(100% - 1lh) no-repeat;
+    }
+    .has-details { position: relative; }
+    .slot.has-details { padding-inline-end: 1.8rem; }
+    .tracks .has-details > h3, .tracks .has-details > .session-details { padding-inline-end: 1.3rem; }
+    .has-details:hover, .has-details:focus-within { box-shadow: inset 0 0 0 2px var(--line); }
+    .details-trigger {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      border: 0;
+      padding: 0;
+      border-radius: inherit;
+      background: transparent;
+      color: var(--accent);
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    .details-trigger span { position: absolute; top: .25rem; right: .5rem; }
+    .details-trigger:focus-visible { outline-offset: -3px; }
+    dialog {
+      width: min(92vw, 48rem);
+      max-height: 86dvh;
+      padding: 0;
+      border: 1px solid #d5cfe4;
+      border-radius: .9rem;
+      color: #25233c;
+      background: white;
+      box-shadow: 0 1.2rem 4rem #25233c50;
+    }
+    dialog::backdrop { background: #19152cba; }
+    body:has(dialog[open]) { overflow: hidden; }
+    .dialog-panel { padding: clamp(1rem, 3vw, 2rem); }
+    .dialog-header { display: flex; align-items: start; gap: .75rem; justify-content: space-between; }
+    .dialog-header h2 { font-size: clamp(1.25rem, 3vw, 1.9rem); }
+    .dialog-meta { margin: 0 0 .4rem; color: var(--accent); }
+    .dialog-close {
+      border: 1px solid #d5cfe4;
+      border-radius: .4rem;
+      padding: .3rem .55rem;
+      background: #f6f5f9;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+    .dialog-copy { line-height: 1.5; }
+    .dialog-copy p:last-child { margin-bottom: 0; }
+    .breakout-note { margin: .3rem 0 .45rem; }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .35rem 1rem;
+      padding: .35rem clamp(.75rem, 2vw, 1.8rem);
+      border-top: 1px solid #e8e5ee;
+      font-size: .8rem;
+    }
+
+    @media screen and (max-width: 760px) {
+      .slot, .breakout-header { grid-template-columns: 6rem minmax(0, 1fr); gap: .4rem; }
+      .round { grid-template-columns: minmax(42rem, 1fr); gap: .25rem; overflow-x: auto; padding-bottom: .3rem; }
+      .round > .time { position: sticky; inset-inline-start: 0; justify-self: start; }
+      .slide-header { grid-template-columns: minmax(0, 1fr); }
+      .slide-header .slide-meta { justify-self: start; text-align: start; }
+    }
+
+    /* Landscape screens: lock to the viewport so the slide never scrolls */
+    @media screen and (orientation: landscape) and (min-width: 761px) {
+      body { height: 100dvh; overflow: hidden; }
+      main, .slide { min-height: 0; }
+      .timeline { min-height: 0; overflow: auto; }
+    }
+
+    @media screen and (min-width: 761px) {
+      .slot.has-details > div { display: flex; align-items: baseline; gap: .65rem; }
+      .slot.has-details .slot-title { flex: none; max-width: 60%; }
+      .slot.has-details .session-details { min-width: 0; margin-top: 0; }
+    }
+    @media screen and (min-width: 761px) and (max-height: 950px) {
+      .deck-bar { padding-block: .2rem; }
+      .day-nav a { padding-block: .25rem; }
+      .slide-header { padding-block: .35rem; }
+      h1 { font-size: clamp(1.7rem, min(4.5vw, 5.5dvh), 3.1rem); }
+      .slot { padding-block: .12rem; }
+      .breakouts { margin-block: .25rem; padding-block: .3rem; }
+      .breakout-note { margin-block: .2rem .3rem; }
+      .tracks li { padding-block: .25rem; }
+      .tracks .details-copy { --preview-lines: 2; }
+    }
+    @media screen and (max-height: 850px) {
+      .tracks .details-copy { --preview-lines: 1; }
+    }
+    @media screen and (min-height: 1000px) {
+      .details-copy { --preview-lines: 2; }
+      .tracks .details-copy { --preview-lines: 5; }
+    }
+
+    @page { size: landscape; margin: 6mm; }
+    @media print {
+      /* Scale type with the page so A4 and A3 are both filled */
+      :root { background: white; font-size: min(1.3vw, 2.15vh); }
+      body { display: block; }
+      main { display: block; width: 100%; padding: 0; }
+      .deck-bar, .session-details, .details-trigger, dialog { display: none; }
+      .has-details:hover, .has-details:focus-within { box-shadow: none; }
+      .slot.has-details, .tracks .has-details { padding-inline-end: .6rem; }
+      .slide {
+        display: grid !important;
+        grid-template-rows: auto 1fr auto;
+        /* One day per sheet: clip to the page box so rounding can't spill a page */
+        height: calc(100vh - 1px);
+        min-height: 0;
+        overflow: hidden;
+        margin: 0;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+      #day-1 { break-after: page; page-break-after: always; }
+      .timeline { min-height: 0; overflow: hidden; }
+      .slide-qr { display: block; height: 5.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="deck-bar">
+    <a href="../index.html">CNTF documentation</a>
+    <nav class="day-nav" aria-label="Agenda slides">
+      <a href="#day-1">Day 1 · 25 Nov</a>
+      <a href="#day-2">Day 2 · 26 Nov</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="slide" id="day-1" aria-labelledby="day-1-title">
+      <header class="slide-header">
+        <div>
+          <p class="eyebrow">CNTF 2026 · Agenda / Day 1</p>
+          <h1 id="day-1-title">Cloud-Native</h1>
+        </div>
+        <a class="slide-qr" href="https://swisscom.github.io/CNTF/cntf-2026/schedule.html#day-1" title="Open Day 1 agenda online"><svg role="img" aria-label="QR code: https://swisscom.github.io/CNTF/cntf-2026/schedule.html#day-1" viewBox="0 0 33 33" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="QRcode"><rect x="0" y="0" width="33" height="33" fill="#ffffff"/><path style="stroke:#000000" transform="translate(0,0.5)" d="M0,0h1M1,0h1M2,0h1M3,0h1M4,0h1M5,0h1M6,0h1M10,0h1M12,0h1M13,0h1M18,0h1M19,0h1M20,0h1M21,0h1M26,0h1M27,0h1M28,0h1M29,0h1M30,0h1M31,0h1M32,0h1M0,1h1M6,1h1M8,1h1M10,1h1M14,1h1M15,1h1M16,1h1M17,1h1M18,1h1M20,1h1M26,1h1M32,1h1M0,2h1M2,2h1M3,2h1M4,2h1M6,2h1M12,2h1M14,2h1M15,2h1M19,2h1M21,2h1M22,2h1M23,2h1M26,2h1M28,2h1M29,2h1M30,2h1M32,2h1M0,3h1M2,3h1M3,3h1M4,3h1M6,3h1M8,3h1M9,3h1M10,3h1M12,3h1M13,3h1M16,3h1M17,3h1M20,3h1M21,3h1M22,3h1M23,3h1M24,3h1M26,3h1M28,3h1M29,3h1M30,3h1M32,3h1M0,4h1M2,4h1M3,4h1M4,4h1M6,4h1M9,4h1M14,4h1M16,4h1M17,4h1M18,4h1M19,4h1M20,4h1M23,4h1M24,4h1M26,4h1M28,4h1M29,4h1M30,4h1M32,4h1M0,5h1M6,5h1M8,5h1M9,5h1M11,5h1M12,5h1M15,5h1M16,5h1M18,5h1M20,5h1M22,5h1M26,5h1M32,5h1M0,6h1M1,6h1M2,6h1M3,6h1M4,6h1M5,6h1M6,6h1M8,6h1M10,6h1M12,6h1M14,6h1M16,6h1M18,6h1M20,6h1M22,6h1M24,6h1M26,6h1M27,6h1M28,6h1M29,6h1M30,6h1M31,6h1M32,6h1M9,7h1M10,7h1M11,7h1M14,7h1M15,7h1M18,7h1M19,7h1M20,7h1M21,7h1M23,7h1M0,8h1M1,8h1M2,8h1M3,8h1M4,8h1M6,8h1M7,8h1M8,8h1M9,8h1M11,8h1M15,8h1M17,8h1M19,8h1M21,8h1M22,8h1M23,8h1M24,8h1M25,8h1M27,8h1M29,8h1M31,8h1M1,9h1M4,9h1M8,9h1M10,9h1M12,9h1M13,9h1M16,9h1M18,9h1M19,9h1M21,9h1M22,9h1M23,9h1M26,9h1M30,9h1M31,9h1M32,9h1M2,10h1M5,10h1M6,10h1M7,10h1M10,10h1M13,10h1M14,10h1M15,10h1M21,10h1M22,10h1M25,10h1M26,10h1M28,10h1M29,10h1M31,10h1M0,11h1M1,11h1M2,11h1M3,11h1M4,11h1M5,11h1M8,11h1M12,11h1M13,11h1M15,11h1M16,11h1M19,11h1M20,11h1M21,11h1M24,11h1M25,11h1M28,11h1M30,11h1M4,12h1M6,12h1M7,12h1M8,12h1M9,12h1M10,12h1M12,12h1M14,12h1M15,12h1M17,12h1M20,12h1M21,12h1M22,12h1M23,12h1M24,12h1M27,12h1M28,12h1M29,12h1M3,13h1M5,13h1M7,13h1M16,13h1M18,13h1M19,13h1M21,13h1M23,13h1M26,13h1M31,13h1M32,13h1M2,14h1M3,14h1M4,14h1M6,14h1M7,14h1M9,14h1M11,14h1M12,14h1M15,14h1M16,14h1M22,14h1M24,14h1M25,14h1M26,14h1M28,14h1M31,14h1M1,15h1M3,15h1M7,15h1M8,15h1M11,15h1M14,15h1M18,15h1M19,15h1M21,15h1M23,15h1M26,15h1M27,15h1M30,15h1M1,16h1M2,16h1M3,16h1M4,16h1M6,16h1M9,16h1M11,16h1M15,16h1M17,16h1M20,16h1M23,16h1M24,16h1M25,16h1M27,16h1M28,16h1M31,16h1M3,17h1M4,17h1M5,17h1M7,17h1M8,17h1M10,17h1M12,17h1M13,17h1M14,17h1M19,17h1M23,17h1M24,17h1M26,17h1M29,17h1M31,17h1M32,17h1M2,18h1M6,18h1M9,18h1M13,18h1M14,18h1M15,18h1M22,18h1M24,18h1M25,18h1M28,18h1M29,18h1M31,18h1M0,19h1M1,19h1M5,19h1M7,19h1M10,19h1M12,19h1M13,19h1M15,19h1M16,19h1M21,19h1M22,19h1M23,19h1M24,19h1M25,19h1M26,19h1M27,19h1M30,19h1M1,20h1M2,20h1M6,20h1M7,20h1M8,20h1M12,20h1M14,20h1M17,20h1M20,20h1M22,20h1M24,20h1M25,20h1M28,20h1M31,20h1M0,21h1M1,21h1M2,21h1M3,21h1M7,21h1M9,21h1M10,21h1M16,21h1M17,21h1M18,21h1M19,21h1M21,21h1M23,21h1M26,21h1M29,21h1M31,21h1M32,21h1M0,22h1M3,22h1M4,22h1M6,22h1M7,22h1M8,22h1M10,22h1M11,22h1M12,22h1M15,22h1M16,22h1M26,22h1M28,22h1M29,22h1M31,22h1M0,23h1M2,23h1M3,23h1M5,23h1M8,23h1M9,23h1M11,23h1M14,23h1M15,23h1M16,23h1M18,23h1M19,23h1M21,23h1M22,23h1M25,23h1M27,23h1M29,23h1M30,23h1M0,24h1M2,24h1M4,24h1M6,24h1M7,24h1M8,24h1M11,24h1M17,24h1M20,24h1M22,24h1M24,24h1M25,24h1M26,24h1M27,24h1M28,24h1M29,24h1M32,24h1M8,25h1M12,25h1M13,25h1M14,25h1M16,25h1M18,25h1M19,25h1M23,25h1M24,25h1M28,25h1M30,25h1M32,25h1M0,26h1M1,26h1M2,26h1M3,26h1M4,26h1M5,26h1M6,26h1M8,26h1M10,26h1M13,26h1M14,26h1M15,26h1M20,26h1M22,26h1M23,26h1M24,26h1M26,26h1M28,26h1M29,26h1M31,26h1M0,27h1M6,27h1M9,27h1M10,27h1M12,27h1M13,27h1M15,27h1M16,27h1M20,27h1M21,27h1M23,27h1M24,27h1M28,27h1M29,27h1M30,27h1M31,27h1M0,28h1M2,28h1M3,28h1M4,28h1M6,28h1M8,28h1M12,28h1M14,28h1M15,28h1M16,28h1M17,28h1M18,28h1M19,28h1M22,28h1M24,28h1M25,28h1M26,28h1M27,28h1M28,28h1M29,28h1M31,28h1M32,28h1M0,29h1M2,29h1M3,29h1M4,29h1M6,29h1M8,29h1M10,29h1M16,29h1M17,29h1M18,29h1M19,29h1M21,29h1M22,29h1M24,29h1M25,29h1M28,29h1M29,29h1M30,29h1M31,29h1M32,29h1M0,30h1M2,30h1M3,30h1M4,30h1M6,30h1M8,30h1M10,30h1M11,30h1M12,30h1M15,30h1M17,30h1M21,30h1M22,30h1M25,30h1M26,30h1M29,30h1M0,31h1M6,31h1M8,31h1M10,31h1M11,31h1M14,31h1M15,31h1M18,31h1M19,31h1M20,31h1M21,31h1M25,31h1M29,31h1M30,31h1M0,32h1M1,32h1M2,32h1M3,32h1M4,32h1M5,32h1M6,32h1M8,32h1M11,32h1M17,32h1M22,32h1M23,32h1M24,32h1M27,32h1M28,32h1M31,32h1"/></g></svg></a>
+        <p class="slide-meta"><time datetime="2026-11-25">Wednesday, 25 November</time> · Bern · CET</p>
+      </header>
+      <ol class="timeline" role="list">
+        <li class="slot pause"><span class="time">09:00–09:30</span><div><span class="slot-title">Check-in, Welcome Coffee ☕</span>
+          <details class="session-details"><summary>Details</summary><p>Pick up your badge and have a coffee before the forum starts.</p></details>
+        </div></li>
+        <li class="slot"><span class="time">09:30–10:00</span><div><span class="slot-title">Welcome &amp; Orientation</span>
+          <details class="session-details"><summary>Details</summary><p>Lukas Leuthold introduces the Swisscom venue in Bern and walks through the conference agenda.</p></details>
+        </div></li>
+        <li class="slot"><span class="time">10:00–10:15</span><div><span class="slot-title">CNTF 2025 Deliverables</span>
+          <details class="session-details"><summary>Details</summary><p>Lukas Leuthold reviews the outcomes of CNTF 2025 in Zurich.</p></details>
+        </div></li>
+        <li class="slot"><span class="time">10:15–10:30</span><span class="slot-title">Keynote Swisscom CTIO Mark Düsener</span></li>
+        <li class="slot pause"><span class="time">10:30–11:00</span><div><span class="slot-title">☕ Coffee break</span>
+          <details class="session-details"><summary>Details</summary><p>Take a break and catch up with other attendees.</p></details>
+        </div></li>
+        <li class="slot"><span class="time">11:00–12:30</span><div><span class="slot-title">GitOps Journeys Orange &amp; Swisscom</span>
+          <details class="session-details"><summary>Details</summary><p>Orange and Swisscom present their GitOps journeys and compare where their approaches converge and where they differ.</p></details>
+        </div></li>
+        <li class="slot pause"><span class="time">12:30–13:30</span><span class="slot-title">🍽️ Lunch break</span></li>
+        <li class="breakouts">
+          <header class="breakout-header">
+            <span class="time">13:30–15:50</span>
+            <h2>Breakout Sessions Day 1 <span class="slot-label">· Four parallel sessions per round</span></h2>
+          </header>
+          <p class="breakout-note">Parallel sessions on cloud-native topics.</p>
+          <div class="round" role="region" aria-labelledby="day-1-round-1" tabindex="0">
+            <span id="day-1-round-1" class="time">14:00–14:50</span>
+            <ul class="tracks" role="list">
+              <li><h3>Telstra: Scaling cloud-native operations across Mobile Core</h3>
+                <details class="session-details"><summary>Details</summary><p>Telstra's journey towards onboarding and managing CNFs at scale across Australia, using GitOps, declarative automation and standardised lifecycle/configuration management. The discussion will cover the foundations needed to operate this model at telco scale, the challenges that remain, and where greater operator and vendor alignment is required.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> Brain Gym Hall</p>
+              </li>
+              <li><h3>Telefónica GitOps Journey:</h3>
+                <details class="session-details"><summary>Details</summary><p>From Vendor Artifact Delivery to IMS deployment in AWS. A fully automated, event-driven GitOps pipeline</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> A042 / A044 Hall of Fame</p>
+              </li>
+              <li><h3>OpenMind: The Disco Ball - Reflections on cloud native from 50 customers and 100+ operators a year</h3>
+                <details class="session-details"><summary>Details</summary><p>Operators are moving to cloud-native network functions at very different speeds, and from very different starting points. Drawing on work with operators of every tier worldwide, Openmind Networks looks at why these journeys have become so fragmented and what operators can do now to prepare the ground, so that vendors can deliver CNF in their networks effectively. The session also covers the organisational side of the shift: the changes in skills, structures and ways of working needed to support the technical move, which are often the harder part.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> AZ38/AZ40 Business Factors</p>
+              </li>
+              <li><h3>TDC: TDC NET Core Network Transformation &amp; Automation Strategy</h3>
+                <details class="session-details"><summary>Details</summary>
+                  <p>I plan to walk the audience through TDC NET’s core network transformation journey, our current challenges related to lifecycle management (LCM) and observability, and our strategy and vision for automating core network operations.</p>
+                  <p>I look forward to sharing our experiences and exchanging ideas with the audience.</p>
+                </details>
+                <p class="room"><span aria-hidden="true">📍</span> A046 Hear, Create, Deliver</p>
+              </li>
+            </ul>
+          </div>
+          <div class="round" role="region" aria-labelledby="day-1-round-2" tabindex="0">
+            <span id="day-1-round-2" class="time">15:00–15:50</span>
+            <ul class="tracks" role="list">
+              <li><h3>Mavenir: Evolving to Autonomous Operations with GitOps and Cloud-Native CNFs</h3>
+                <details class="session-details"><summary>Details</summary><p>Discover how GitOps and Cloud-native Network Functions (CNFs) provide the foundation for autonomous network operations. This session examines how infrastructure and application lifecycle automation, CI/CD practices, observability, and AI-driven insights work together to improve agility, consistency, and operational efficiency. Learn how communications service providers (CSPs) can reduce manual processes, accelerate service delivery, workload migration from VNFs to CNFs, and build a scalable path toward self-managing networks.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> Brain Gym Hall</p>
+              </li>
+              <li><h3>Deutsche Telekom: OCAS is operator based unified life cycle automation platform for cloud-native telco services.</h3>
+                <p class="room"><span aria-hidden="true">📍</span> A042 / A044 Hall of Fame</p>
+              </li>
+              <li><h3>Ericsson: CSP–Vendor Continuous Feedback Loop</h3>
+                <details class="session-details"><summary>Details</summary><p>How can CSPs and vendors create a continuous feedback loop that benefits both sides? What information should be shared, what makes sharing it across company boundaries difficult, and what practical approaches could help? Join the discussion and share your perspective.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> AZ38/AZ40 Business Factors</p>
+              </li>
+              <li><h3>ATT: Deterministic ISSU through Atomicity</h3>
+                <details class="session-details"><summary>Details</summary>
+                  <p>ATT shares their autonomous lifecycle management solution for the cloud native 5G Core. In this, ATT like to get input and alignment on decomposed, independently deployable helm charts and the use of the atomic helm operation and helm tests to ensure upgrades are performed in a safe, atomic manner at the NF level, ending either at the target release or the starting release without operator intervention.</p>
+                  <p>This is in the vein of the software freshness work stream, and I’ll share our views on ISSU/R/D.</p>
+                </details>
+                <p class="room"><span aria-hidden="true">📍</span> A046 Hear, Create, Deliver</p>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="slot pause"><span class="time">15:50–16:20</span><span class="slot-title">☕ Coffee break</span></li>
+        <li class="slot"><span class="time">16:20–18:00</span><div><span class="slot-title">Wrap-up Breakout Sessions &amp; Closing CNTF Day 1</span>
+          <details class="session-details"><summary>Details</summary><p>Recap the day and share feedback.</p></details>
+        </div></li>
+        <li class="slot social"><span class="time">19:00–22:00</span><div><span class="slot-title">🍽️ Joint Dinner at Ristorante Lorenzini, Hotelgasse 10, Bern</span>
+          <details class="session-details"><summary>Details</summary><p>Share ideas and get to know other participants over dinner. <a href="https://maps.app.goo.gl/ecpee5TG8ZZAKsj36">Google Maps</a> | <a href="https://www.bindella.ch/restaurants/lorenzini">Restaurant Website</a></p></details>
+        </div></li>
+      </ol>
+      <footer class="slide-footer">
+        <span>All times CET (UTC+1)</span>
+        <a href="https://oniva.swisscom.com/en/event/cntf-2026">Official event page</a>
+      </footer>
+    </section>
+
+    <section class="slide" id="day-2" aria-labelledby="day-2-title">
+      <header class="slide-header">
+        <div>
+          <p class="eyebrow">CNTF 2026 · Agenda / Day 2</p>
+          <h1 id="day-2-title">Agentic AI in Telco/TechCo</h1>
+        </div>
+        <a class="slide-qr" href="https://swisscom.github.io/CNTF/cntf-2026/schedule.html#day-2" title="Open Day 2 agenda online"><svg role="img" aria-label="QR code: https://swisscom.github.io/CNTF/cntf-2026/schedule.html#day-2" viewBox="0 0 33 33" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="QRcode"><rect x="0" y="0" width="33" height="33" fill="#ffffff"/><path style="stroke:#000000" transform="translate(0,0.5)" d="M0,0h1M1,0h1M2,0h1M3,0h1M4,0h1M5,0h1M6,0h1M8,0h1M9,0h1M10,0h1M12,0h1M14,0h1M15,0h1M18,0h1M26,0h1M27,0h1M28,0h1M29,0h1M30,0h1M31,0h1M32,0h1M0,1h1M6,1h1M8,1h1M9,1h1M10,1h1M13,1h1M16,1h1M17,1h1M18,1h1M19,1h1M21,1h1M26,1h1M32,1h1M0,2h1M2,2h1M3,2h1M4,2h1M6,2h1M8,2h1M10,2h1M11,2h1M14,2h1M15,2h1M16,2h1M17,2h1M18,2h1M19,2h1M21,2h1M24,2h1M26,2h1M28,2h1M29,2h1M30,2h1M32,2h1M0,3h1M2,3h1M3,3h1M4,3h1M6,3h1M8,3h1M9,3h1M11,3h1M13,3h1M18,3h1M20,3h1M21,3h1M26,3h1M28,3h1M29,3h1M30,3h1M32,3h1M0,4h1M2,4h1M3,4h1M4,4h1M6,4h1M13,4h1M15,4h1M16,4h1M17,4h1M18,4h1M21,4h1M23,4h1M24,4h1M26,4h1M28,4h1M29,4h1M30,4h1M32,4h1M0,5h1M6,5h1M8,5h1M11,5h1M12,5h1M14,5h1M16,5h1M18,5h1M19,5h1M21,5h1M22,5h1M26,5h1M32,5h1M0,6h1M1,6h1M2,6h1M3,6h1M4,6h1M5,6h1M6,6h1M8,6h1M10,6h1M12,6h1M14,6h1M16,6h1M18,6h1M20,6h1M22,6h1M24,6h1M26,6h1M27,6h1M28,6h1M29,6h1M30,6h1M31,6h1M32,6h1M9,7h1M12,7h1M15,7h1M16,7h1M17,7h1M19,7h1M20,7h1M21,7h1M22,7h1M24,7h1M0,8h1M1,8h1M4,8h1M5,8h1M6,8h1M11,8h1M13,8h1M14,8h1M17,8h1M20,8h1M22,8h1M23,8h1M24,8h1M27,8h1M29,8h1M30,8h1M31,8h1M32,8h1M0,9h1M1,9h1M2,9h1M4,9h1M8,9h1M9,9h1M10,9h1M12,9h1M14,9h1M15,9h1M16,9h1M18,9h1M20,9h1M22,9h1M23,9h1M25,9h1M27,9h1M30,9h1M2,10h1M3,10h1M5,10h1M6,10h1M8,10h1M11,10h1M12,10h1M13,10h1M14,10h1M15,10h1M16,10h1M17,10h1M18,10h1M21,10h1M23,10h1M24,10h1M25,10h1M26,10h1M30,10h1M31,10h1M0,11h1M1,11h1M2,11h1M8,11h1M10,11h1M11,11h1M13,11h1M15,11h1M17,11h1M18,11h1M19,11h1M20,11h1M21,11h1M22,11h1M23,11h1M25,11h1M29,11h1M0,12h1M1,12h1M3,12h1M5,12h1M6,12h1M7,12h1M10,12h1M12,12h1M13,12h1M17,12h1M19,12h1M22,12h1M23,12h1M24,12h1M25,12h1M26,12h1M28,12h1M29,12h1M31,12h1M32,12h1M0,13h1M2,13h1M3,13h1M4,13h1M8,13h1M9,13h1M13,13h1M14,13h1M15,13h1M16,13h1M18,13h1M20,13h1M23,13h1M25,13h1M27,13h1M0,14h1M2,14h1M6,14h1M9,14h1M15,14h1M17,14h1M18,14h1M23,14h1M25,14h1M26,14h1M29,14h1M30,14h1M31,14h1M3,15h1M4,15h1M5,15h1M8,15h1M9,15h1M12,15h1M14,15h1M16,15h1M17,15h1M19,15h1M21,15h1M22,15h1M24,15h1M26,15h1M27,15h1M28,15h1M29,15h1M4,16h1M6,16h1M9,16h1M10,16h1M11,16h1M13,16h1M14,16h1M17,16h1M19,16h1M21,16h1M23,16h1M24,16h1M26,16h1M28,16h1M32,16h1M3,17h1M5,17h1M10,17h1M12,17h1M15,17h1M20,17h1M21,17h1M23,17h1M24,17h1M25,17h1M27,17h1M29,17h1M1,18h1M3,18h1M4,18h1M5,18h1M6,18h1M7,18h1M9,18h1M11,18h1M12,18h1M13,18h1M14,18h1M15,18h1M16,18h1M17,18h1M18,18h1M23,18h1M25,18h1M30,18h1M31,18h1M1,19h1M2,19h1M3,19h1M4,19h1M5,19h1M7,19h1M8,19h1M11,19h1M13,19h1M15,19h1M17,19h1M18,19h1M21,19h1M25,19h1M26,19h1M27,19h1M28,19h1M29,19h1M5,20h1M6,20h1M8,20h1M9,20h1M12,20h1M13,20h1M15,20h1M17,20h1M19,20h1M21,20h1M22,20h1M24,20h1M26,20h1M27,20h1M28,20h1M32,20h1M0,21h1M1,21h1M2,21h1M5,21h1M7,21h1M8,21h1M10,21h1M13,21h1M14,21h1M15,21h1M16,21h1M17,21h1M18,21h1M20,21h1M23,21h1M25,21h1M27,21h1M29,21h1M3,22h1M5,22h1M6,22h1M7,22h1M9,22h1M15,22h1M17,22h1M18,22h1M22,22h1M23,22h1M24,22h1M26,22h1M30,22h1M31,22h1M4,23h1M5,23h1M7,23h1M8,23h1M10,23h1M12,23h1M14,23h1M15,23h1M17,23h1M19,23h1M21,23h1M23,23h1M24,23h1M25,23h1M27,23h1M28,23h1M0,24h1M1,24h1M2,24h1M5,24h1M6,24h1M7,24h1M8,24h1M9,24h1M10,24h1M11,24h1M13,24h1M14,24h1M15,24h1M17,24h1M19,24h1M21,24h1M22,24h1M24,24h1M25,24h1M26,24h1M27,24h1M28,24h1M29,24h1M31,24h1M8,25h1M10,25h1M12,25h1M15,25h1M16,25h1M18,25h1M20,25h1M21,25h1M23,25h1M24,25h1M28,25h1M30,25h1M31,25h1M0,26h1M1,26h1M2,26h1M3,26h1M4,26h1M5,26h1M6,26h1M11,26h1M12,26h1M13,26h1M14,26h1M15,26h1M16,26h1M17,26h1M18,26h1M20,26h1M24,26h1M26,26h1M28,26h1M30,26h1M31,26h1M0,27h1M6,27h1M8,27h1M9,27h1M10,27h1M11,27h1M13,27h1M15,27h1M17,27h1M18,27h1M20,27h1M21,27h1M22,27h1M24,27h1M28,27h1M31,27h1M0,28h1M2,28h1M3,28h1M4,28h1M6,28h1M8,28h1M12,28h1M13,28h1M16,28h1M17,28h1M18,28h1M20,28h1M21,28h1M22,28h1M24,28h1M25,28h1M26,28h1M27,28h1M28,28h1M29,28h1M0,29h1M2,29h1M3,29h1M4,29h1M6,29h1M10,29h1M13,29h1M14,29h1M15,29h1M16,29h1M17,29h1M18,29h1M20,29h1M22,29h1M24,29h1M26,29h1M27,29h1M28,29h1M29,29h1M30,29h1M0,30h1M2,30h1M3,30h1M4,30h1M6,30h1M9,30h1M10,30h1M15,30h1M16,30h1M18,30h1M21,30h1M23,30h1M24,30h1M25,30h1M26,30h1M28,30h1M30,30h1M0,31h1M6,31h1M8,31h1M10,31h1M12,31h1M14,31h1M15,31h1M16,31h1M17,31h1M19,31h1M20,31h1M21,31h1M22,31h1M23,31h1M24,31h1M25,31h1M28,31h1M0,32h1M1,32h1M2,32h1M3,32h1M4,32h1M5,32h1M6,32h1M8,32h1M10,32h1M11,32h1M13,32h1M14,32h1M15,32h1M17,32h1M19,32h1M20,32h1M21,32h1M22,32h1M23,32h1M24,32h1M25,32h1M26,32h1M28,32h1M32,32h1"/></g></svg></a>
+        <p class="slide-meta"><time datetime="2026-11-26">Thursday, 26 November</time> · Bern · CET</p>
+      </header>
+      <ol class="timeline" role="list">
+        <li class="slot pause"><span class="time">08:30–09:00</span><span class="slot-title">Check-in, Welcome Coffee ☕</span></li>
+        <li class="slot"><span class="time">09:00–10:00</span><div><span class="slot-title">Keynote with MCP Gateway Demo by Swisscom</span>
+          <details class="session-details"><summary>Speaker</summary><p>Lukas Leuthold & Harutyun Abrahamyan</p></details>
+        </div></li>
+        <li class="breakouts">
+          <header class="breakout-header">
+            <span class="time">10:00–12:20</span>
+            <h2>Breakout Sessions Day 2 <span class="slot-label">· Four parallel sessions per round</span></h2>
+          </header>
+          <p class="breakout-note">Parallel sessions on agentic AI in Telco/TechCo.</p>
+          <div class="round" role="region" aria-labelledby="day-2-round-1" tabindex="0">
+            <span id="day-2-round-1" class="time">10:30–11:20</span>
+            <ul class="tracks" role="list">
+              <li><h3>Orange, Vodafone & Swisscom: Collaborative AI for Network Operations—Shared Skills, Smarter Troubleshooting at Sylva Hackathon</h3>
+                <details class="session-details"><summary>Details</summary><p>Telco-specific AI agents and AI-driven root cause analysis are promising areas of innovation, but no operator needs to solve the challenges alone. Drawing on work from the Sylva Hackathon, Orange and Swisscom will explore how reusable agent skills could help AI understand network operations, correlate alarms with metrics, logs and traces, and support troubleshooting. Join the discussion on how operators can work together on the research, shared foundations and safeguards needed to bring these initiatives closer to operational use.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> Brain Gym Hall</p>
+              </li>
+              <li><h3>OpenMind: Face/off - Agentic adoption and MCP enablement</h3>
+                <details class="session-details"><summary>Details</summary><p>Examining real-world AI Ops use cases requested by MNOs globally, exploring how AI is embedded across the software development lifecycle, and sharing practical approaches for leveraging AI in automated testing to drive autonomous network operations.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> A042 / A044 Hall of Fame</p>
+              </li>
+              <li><h3>TNO: agentic AI tool for automated migration of cloud‑native applications</h3>
+                <details class="session-details"><summary>Details</summary><p>Although Kubernetes originally aimed to enable seamless portability across cloud providers, the widespread use of Custom Resources for networking, storage, and policy control has introduced practical incompatibilities. At TNO, we are developing a proof‑of‑concept tool that automatically translates configuration files between incompatible Kubernetes environments, significantly reducing the effort required to migrate applications, particularly for workloads with advanced network policy requirements. The tool integrates with standardized CAMARA APIs at the network layer, supporting deployment and operation of network‑aware applications across heterogeneous cloud infrastructures.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> AZ38/AZ40 Business Factors</p>
+              </li>
+              <li><h3>Oracle: Agentic AI for Network AIOps: From Insight to Action</h3>
+                <details class="session-details"><summary>Details</summary>
+                  <p>As telecom networks become more complex, operations teams face growing pressure to maintain service quality, resolve incidents faster and improve efficiency. AI can help detect anomalies and surface insights—but the next opportunity is to connect those insights with timely, coordinated action.</p>
+                  <p>This session presents Oracle’s perspective on how agentic AI can advance Network AIOps. By combining network telemetry, operational knowledge and service context, AI agents can help teams investigate problems, assess their impact and coordinate responses across operational tools and workflows.</p>
+                  <p>Practical use cases illustrate the approach, including detecting degradation and prioritizing intervention based on customer and business impact; and supporting remediation through recommended actions, human approval and controlled execution, followed by verification of the outcome.</p>
+                  <p>The session explores the foundations needed to make these capabilities dependable: trusted data, integration across multiple environments, clear operational guardrails and traceable decisions. It offers a practical path towards greater network autonomy.</p>
+                </details>
+                <p class="room"><span aria-hidden="true">📍</span> A046 Hear, Create, Deliver</p>
+              </li>
+            </ul>
+          </div>
+          <div class="round" role="region" aria-labelledby="day-2-round-2" tabindex="0">
+            <span id="day-2-round-2" class="time">11:30–12:20</span>
+            <ul class="tracks" role="list">
+              <li><h3>Telstra: Agentic AI: From AI-assisted operations towards autonomous networks</h3>
+                <details class="session-details"><summary>Details</summary><p>How Telstra's approaching Agentic AI across Mobile Core, including practical operational use cases, ANLET maturity targets and the path towards greater closed-loop autonomy.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> Brain Gym Hall</p>
+              </li>
+              <li><h3>Ericsson: The Path to Robust Agentic AI</h3>
+                <details class="session-details"><summary>Details</summary><p>Will we ever be able to use agents to manage society critical services? Can we afford not to? Where are you focusing agentic efforts initially and how are you mitigating risks?</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> A042 / A044 Hall of Fame</p>
+              </li>
+              <li><h3>Mavenir: Who’s on the Call? Agentic AI and Differentiated Connectivity</h3>
+                <details class="session-details"><summary>Details</summary><p>Much of today's AI-for-networks discussion focuses on automation and operational efficiency, but a bigger question is emerging: how will AI change the services and experiences networks deliver? As AI agents begin to initiate and participate in communications, and AI capabilities enhance and adapt live sessions, operators face a strategic choice about which aspects of the experience they should enable, control, or expose to external platforms. This session will explore the implications for differentiated connectivity, trust, security, quality, sovereignty, and open interfaces, and where the industry needs to align.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> AZ38/AZ40 Business Factors</p>
+              </li>
+              <li><h3>AWS: Agentic Network Operation Benchmarks</h3>
+                <details class="session-details"><summary>Details</summary><p>AI agents are starting to act on networks, not only advise on them. Before operators give an agent write access, they need evidence of how it behaves on real operational tasks: whether it reaches the intended state, stays within its permissions and leaves the system clean. This session presents early, exploratory work on a benchmark that evaluates agents on network operation tasks. We will share why we started it, how it is designed and what we have learned so far. We welcome feedback and ideas from the community on which tasks, safety checks and evidence would make such a benchmark useful, and are interested in hearing from those working on similar questions.</p></details>
+                <p class="room"><span aria-hidden="true">📍</span> A046 Hear, Create, Deliver</p>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="slot pause"><span class="time">12:20–13:30</span><span class="slot-title">🍽️ Lunch Break</span></li>
+        <li class="slot"><span class="time">13:30–14:30</span><span class="slot-title">Wrap-up Breakout Sessions Day 2</span></li>
+        <li class="slot pause"><span class="time">14:30–15:00</span><span class="slot-title">☕ Coffee Break</span></li>
+        <li class="slot"><span class="time">15:00–16:00</span><span class="slot-title">CNTF 2026: Results</span></li>
+        <li class="slot"><span class="time">16:00–16:40</span><div><span class="slot-title">Closing CNTF 2026</span>
+          <details class="session-details"><summary>Details</summary><p>Recap the forum, discuss organisation of follow-up work, share feedback, and say goodbye.</p></details>
+        </div></li>
+      </ol>
+      <footer class="slide-footer">
+        <span>All times CET (UTC+1)</span>
+        <a href="https://oniva.swisscom.com/en/event/cntf-2026">Official event page</a>
+      </footer>
+    </section>
+  </main>
+  <dialog id="session-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-panel">
+      <header class="dialog-header">
+        <div>
+          <p class="eyebrow dialog-meta"></p>
+          <h2 id="dialog-title"></h2>
+        </div>
+        <form method="dialog"><button class="dialog-close" autofocus>Close</button></form>
+      </header>
+      <div class="dialog-copy"></div>
+    </div>
+  </dialog>
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dayLinks = document.querySelectorAll('.day-nav a');
+    const dialog = document.querySelector('#session-dialog');
+    const dialogTitle = dialog.querySelector('#dialog-title');
+    const dialogMeta = dialog.querySelector('.dialog-meta');
+    const dialogCopy = dialog.querySelector('.dialog-copy');
+    let activeTrigger;
+
+    dialog.addEventListener('click', event => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => activeTrigger?.focus({ preventScroll: true }));
+
+    const descriptions = Array.from(document.querySelectorAll('details.session-details'), details => {
+      const card = details.closest('li');
+      const title = card.querySelector('.slot-title, h3').textContent.trim();
+      const slide = card.closest('.slide');
+      const time = card.querySelector('.time') ?? card.closest('.round').querySelector('.time');
+      const container = document.createElement('div');
+      container.className = 'session-details';
+
+      const copy = document.createElement('div');
+      copy.className = 'details-copy';
+      copy.append(...details.querySelectorAll('p'));
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'details-trigger';
+      trigger.setAttribute('aria-label', `Open details: ${title}`);
+      trigger.setAttribute('aria-haspopup', 'dialog');
+      trigger.setAttribute('aria-controls', dialog.id);
+      const icon = document.createElement('span');
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = '↗';
+      trigger.append(icon);
+      trigger.addEventListener('click', () => {
+        activeTrigger = trigger;
+        dialogTitle.textContent = title;
+        dialogMeta.textContent = `${slide.querySelector('.slide-meta time').textContent} · ${time.textContent} CET`;
+        dialog.style.setProperty('--accent', getComputedStyle(slide).getPropertyValue('--accent'));
+        dialogCopy.replaceChildren(...Array.from(copy.children, paragraph => paragraph.cloneNode(true)));
+        dialog.showModal();
+        dialog.scrollTop = 0;
+      });
+
+      container.append(copy);
+      details.replaceWith(container);
+      card.classList.add('has-details');
+      card.append(trigger);
+      return copy;
+    });
+
+    function fitPreviewsToViewport() {
+      const slide = document.querySelector('.slide:not([hidden])');
+      if (!slide) return;
+      const timeline = slide.querySelector('.timeline');
+      const groups = [slide.querySelectorAll('.tracks .details-copy'), slide.querySelectorAll('.slot .details-copy')];
+      for (const group of groups) for (const copy of group) copy.style.removeProperty('--preview-lines');
+      // Only the locked landscape layout must fit without scrolling
+      if (getComputedStyle(timeline).overflowY !== 'auto') return;
+      for (const group of groups) {
+        if (!group.length) continue;
+        let lines = parseInt(getComputedStyle(group[0]).getPropertyValue('--preview-lines'), 10);
+        while (timeline.scrollHeight > timeline.clientHeight && lines > 0) {
+          lines--;
+          for (const copy of group) copy.style.setProperty('--preview-lines', lines);
+        }
+      }
+    }
+
+    function updateDescriptionPreviews() {
+      fitPreviewsToViewport();
+      for (const copy of descriptions) {
+        if (!copy.getClientRects().length) continue;
+        copy.classList.toggle('truncated', copy.scrollHeight > copy.clientHeight);
+      }
+    }
+
+    function showDay() {
+      const current = location.hash === '#day-2' ? '#day-2' : '#day-1';
+      for (const slide of slides) slide.hidden = `#${slide.id}` !== current;
+      for (const link of dayLinks) {
+        if (link.hash === current) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      }
+      updateDescriptionPreviews();
+    }
+
+    window.addEventListener('hashchange', showDay);
+    window.addEventListener('resize', updateDescriptionPreviews);
+    showDay();
+  </script>
+</body>
+</html>
